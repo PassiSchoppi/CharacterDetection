@@ -4,8 +4,9 @@ import random
 import time
 
 cv2.namedWindow("preview")
+
 # change folowing number if its not the main camera
-vc = cv2.VideoCapture(0)
+vc = cv2.VideoCapture(1)
 
 if vc.isOpened(): # try to get the first frame
     rval, frame = vc.read()
@@ -26,13 +27,10 @@ while rval:
     # resize image
     frame = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
     # cut image
-    cutTop = 10
-    cutLeft = 10
+    cutTop = 22
+    cutLeft = 46
     frame = frame[cutTop:len(frame)-cutTop, cutLeft:len(frame[0])-cutLeft]
     
-    # # flip image
-    # frame = cv2.flip(frame, 1)
-
     # show borders
     frame = cv2.Canny(frame, 200,200)
 

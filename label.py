@@ -1,5 +1,6 @@
 import cv2
 import pickle
+import time
 import keyboard
 
 cv2.namedWindow("preview")
@@ -12,7 +13,7 @@ label = []
 i = 0
 new_label = 0
 
-print(im_array)
+print(str(len(im_array)) + ' images')
 
 while not i==len(im_array):
     # get image
@@ -33,7 +34,7 @@ while not i==len(im_array):
     key = ''
     while key == '':
         key = keyboard.read_key(suppress=False)
-    print(key)    
+    print(key)
 
     # process pressed key
     new_label = 0
@@ -43,6 +44,8 @@ while not i==len(im_array):
         new_label = 2
     elif key == 's':
         new_label = 3
+
+    # while not input_state
 
     # append to array
     label.append(new_label)
