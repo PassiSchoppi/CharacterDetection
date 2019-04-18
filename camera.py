@@ -1,5 +1,7 @@
 import cv2
 import pickle
+import random
+import time
 
 cv2.namedWindow("preview")
 # change folowing number if its not the main camera
@@ -23,9 +25,13 @@ while rval:
     dim = (width, height)
     # resize image
     frame = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+    # cut image
+    cutTop = 10
+    cutLeft = 10
+    frame = frame[cutTop:len(frame)-cutTop, cutLeft:len(frame[0])-cutLeft]
     
-    # flip image
-    frame = cv2.flip(frame, 1)
+    # # flip image
+    # frame = cv2.flip(frame, 1)
 
     # show borders
     frame = cv2.Canny(frame, 200,200)
@@ -43,8 +49,15 @@ while rval:
     # show
     cv2.imshow("preview", frame)
     key = cv2.waitKey(20)
+
+    # delay
+    time.sleep(1)
+
     if key == 27: # exit on ESC
         break
+
+# suffle images
+random.shuffle(im_array)
 
 # save out
 # save as .gif
