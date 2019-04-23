@@ -2,6 +2,8 @@ import cv2
 import pickle
 import random
 import time
+import funktions
+import keyboard
 
 cv2.namedWindow("preview")
 
@@ -13,57 +15,60 @@ if vc.isOpened(): # try to get the first frame
 else:
     rval = False
 
-im_array = []
+im_array_space = []
+im_array_h = []
+im_array_s = []
+im_array_u = []
 
 while rval:
     # read from camera
     rval, frame = vc.read()
 
-    # percent of original size
-    scale_percent = 30
-    width = int(frame.shape[1] * scale_percent / 100)
-    height = int(frame.shape[0] * scale_percent / 100)
-    dim = (width, height)
-    # resize image
-    frame = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
-    # cut image
-    cutTop = 22
-    cutLeft = 46
-    frame = frame[cutTop:len(frame)-cutTop, cutLeft:len(frame[0])-cutLeft]
+    frame = funktions.image_processing(frame)
     
-    # show borders
-    frame = cv2.Canny(frame, 200,200)
+    pressedKey = keyboard.read_key(suppress=False)
+    if pressedKey == 'h':
+        im_array_h.append(frame)
+    elif pressedKey == 'u':
+        im_array_u.append(frame)
+    elif pressedKey == 's':
+        im_array_s.append(frame)
+    elif pressedKey == 'space':
+        pressedKey = '_'
+        im_array_space.append(frame)
+    
+    print('pressed key: '+pressedKey, end='\r')
 
-    # append to array
-    im_array.append(frame)
-    
-    # resize image
-    scale_percent = 450
-    width = int(frame.shape[1] * scale_percent / 100)
-    height = int(frame.shape[0] * scale_percent / 100)
-    dim = (width, height)
-    frame = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+    # delay
+    # time.sleep(0.1)
 
     # show
     cv2.imshow("preview", frame)
     key = cv2.waitKey(20)
 
-    # delay
-    time.sleep(1)
-
     if key == 27: # exit on ESC
         break
-
-# suffle images
-random.shuffle(im_array)
 
 # save out
 # save as .gif
 # nononononono
 # save as .pickle
-pickle_out = open("im_array_train.pickle","wb")
-pickle.dump(im_array, pickle_out)
+pickle_out = open("im_array_train_space.pickle","wb")
+pickle.dump(im_array_space, pickle_out)
 pickle_out.close()
+print('saved images_space to im_array_train_space.pickle')
+pickle_out = open("im_array_trainH.pickle","wb")
+pickle.dump(im_array_h, pickle_out)
+pickle_out.close()
+print('saved images_h to im_array_trainH.pickle')
+pickle_out = open("im_array_trainS.pickle","wb")
+pickle.dump(im_array_s, pickle_out)
+pickle_out.close()
+print('saved images_s to im_array_trainS.pickle')
+pickle_out = open("im_array_trainU.pickle","wb")
+pickle.dump(im_array_u, pickle_out)
+pickle_out.close()
+print('saved images_u to im_array_trainU.pickle')
 
 cv2.destroyWindow("preview")
 

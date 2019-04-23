@@ -30,7 +30,7 @@ while not i==len(im_array):
     cv2.imshow("preview", frame)
 
     # wait for pressed key
-    cv2.waitKey(20)
+    cv2.waitKey(100)
     key = ''
     while key == '':
         key = keyboard.read_key(suppress=False)
@@ -46,7 +46,7 @@ while not i==len(im_array):
         new_label = 3
 
     # while not input_state
-
+    time.sleep(0.1)
     # append to array
     label.append(new_label)
     i += 1

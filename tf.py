@@ -2,9 +2,10 @@ import tensorflow.keras as keras
 import tensorflow as tf
 import pickle
 import numpy as np
+import funktions
 
 # load images
-pickle_in = open("im_array_train.pickle","rb")
+pickle_in = open("images.pickle","rb")
 im_array = pickle.load(pickle_in)
 im_array = np.array(im_array)
 
@@ -18,13 +19,8 @@ print('label shape: ' + str(label.shape), end='\n\n')
 
 im_array = tf.keras.utils.normalize(im_array, axis=1)
 
-model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Flatten())
-model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+model = funktions.create_model()
+model.fit(im_array, label, epochs=10)
 
-model.fit(im_array, label, epochs=3)
+# Save the weights
+model.save_weights('./checkpoints/my_checkpoint')
