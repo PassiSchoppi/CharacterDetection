@@ -20,6 +20,8 @@ im_array_h = []
 im_array_s = []
 im_array_u = []
 
+im_array = []
+
 while rval:
     # read from camera
     rval, frame = vc.read()
@@ -36,6 +38,7 @@ while rval:
     elif pressedKey == 'space':
         pressedKey = '_'
         im_array_space.append(frame)
+    im_array.append(frame)
     
     print('pressed key: '+pressedKey, end='\r')
 
@@ -69,6 +72,10 @@ pickle_out = open("im_array_trainU.pickle","wb")
 pickle.dump(im_array_u, pickle_out)
 pickle_out.close()
 print('saved images_u to im_array_trainU.pickle')
+pickle_out = open("im_array.pickle","wb")
+pickle.dump(im_array, pickle_out)
+pickle_out.close()
+print('saved all images to im_array.pickle')
 
 cv2.destroyWindow("preview")
 

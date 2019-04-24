@@ -22,16 +22,17 @@ def create_model():
 
 def image_processing(frame):
     # percent of original size
-    scale_percent = 50
+    scale_percent = 25
     width = int(frame.shape[1] * scale_percent / 100)
     height = int(frame.shape[0] * scale_percent / 100)
     dim = (width, height)
     # resize image
     frame = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
     # cut image
-    cutTop = 22
-    cutLeft = 46
-    frame = frame[cutTop:len(frame)-cutTop, cutLeft:len(frame[0])-cutLeft]
+    cutTop = 0.2
+    cutLeft = 0.3
+    frame = frame[int(len(frame)*cutTop) : int(len(frame)-len(frame)*cutTop), int(len(frame[0])*cutLeft) : int(len(frame[0])-len(frame[0])*cutLeft)]
     # show borders
-    frame = cv2.Canny(frame, 200,200)
+    borderIndex = 300
+    frame = cv2.Canny(frame, borderIndex, borderIndex)
     return np.array(frame)
