@@ -1,81 +1,65 @@
 import cv2
 import pickle
-import random
 import time
 import funktions
-import keyboard
 
-cv2.namedWindow("preview")
+cv2.namedWindow("cam1")
+cv2.namedWindow("cam2")
 
-# change folowing number if its not the main camera
-vc = cv2.VideoCapture(1)
+for i in range(0, 100):
+    # change folowing number if its not the main camera
+    vc1 = cv2.VideoCapture(i)
+    vc2 = cv2.VideoCapture(i+1)
 
-if vc.isOpened(): # try to get the first frame
-    rval, frame = vc.read()
-else:
-    rval = False
-
-im_array_space = []
-im_array_h = []
-im_array_s = []
-im_array_u = []
+    if vc1.isOpened(): # try to get the first frame
+        rval, frame = vc1.read()
+        if vc2.isOpened(): # try to get the first frame
+            rval, frame = vc2.read()
+            print('cameras on port: '+str(i)+' & '+str(i+1))
+            break
+        else:
+            rval = False
+    else:
+        rval = False
 
 im_array = []
 
-while rval:
+while True:
     # read from camera
-    rval, frame = vc.read()
+    rval, frame1 = vc1.read()
+    rval, frame2 = vc2.read()
 
-    frame = funktions.image_processing(frame)
-    
-    pressedKey = keyboard.read_key(suppress=False)
-    if pressedKey == 'h':
-        im_array_h.append(frame)
-    elif pressedKey == 'u':
-        im_array_u.append(frame)
-    elif pressedKey == 's':
-        im_array_s.append(frame)
-    elif pressedKey == 'space':
-        pressedKey = '_'
-        im_array_space.append(frame)
-    im_array.append(frame)
-    
-    print('pressed key: '+pressedKey, end='\r')
+    frame1 = funktions.image_processing(frame1)
+    frame2 = funktions.image_processing(frame2)
+
+    im_array.append(frame1)
+    im_array.append(frame2)
 
     # delay
     # time.sleep(0.1)
 
     # show
-    cv2.imshow("preview", frame)
+    cv2.imshow("cam1", frame1)
     key = cv2.waitKey(20)
-
     if key == 27: # exit on ESC
+        print('manual break')
+        break
+    
+    # show
+    cv2.imshow("cam2", frame2)
+    key = cv2.waitKey(20)
+    if key == 27: # exit on ESC
+        print('manual break')
         break
 
 # save out
 # save as .gif
 # nononononono
 # save as .pickle
-pickle_out = open("im_array_train_space.pickle","wb")
-pickle.dump(im_array_space, pickle_out)
-pickle_out.close()
-print('saved images_space to im_array_train_space.pickle')
-pickle_out = open("im_array_trainH.pickle","wb")
-pickle.dump(im_array_h, pickle_out)
-pickle_out.close()
-print('saved images_h to im_array_trainH.pickle')
-pickle_out = open("im_array_trainS.pickle","wb")
-pickle.dump(im_array_s, pickle_out)
-pickle_out.close()
-print('saved images_s to im_array_trainS.pickle')
-pickle_out = open("im_array_trainU.pickle","wb")
-pickle.dump(im_array_u, pickle_out)
-pickle_out.close()
-print('saved images_u to im_array_trainU.pickle')
 pickle_out = open("im_array.pickle","wb")
 pickle.dump(im_array, pickle_out)
 pickle_out.close()
 print('saved all images to im_array.pickle')
 
-cv2.destroyWindow("preview")
-
+cv2.destroyWindow("cam1")
+cv2.destroyWindow("cam2")

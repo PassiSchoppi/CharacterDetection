@@ -1,76 +1,59 @@
-import pickle
-import time
+import funktions
+import tensorflow.keras as keras
+import tensorflow as tf
 import numpy as np
-import keyboard
-import random
+import time
+import cv2
+from getLabledImages import load_images_from_folder
+import shutil
+from os import listdir
+from os.path import isfile, join
+from tqdm import tqdm
 
-# load images
-pickle_in = open("im_array_trainH.pickle","rb")
-im_array_h = pickle.load(pickle_in)
-pickle_in = open("im_array_trainU.pickle","rb")
-im_array_u = pickle.load(pickle_in)
-pickle_in = open("im_array_trainS.pickle","rb")
-im_array_s = pickle.load(pickle_in)
-pickle_in = open("im_array_train_space.pickle","rb")
-im_array_space = pickle.load(pickle_in)
+onlyfiles = [f for f in listdir('images/') if isfile(join('images/', f))]
 
-new_h = []
-new_s = []
-new_u = []
-sizes = [len(im_array_h), len(im_array_s), len(im_array_u)]
-for i in range(0, np.min(sizes)):
-    new_h.append(im_array_h[i])
-    new_s.append(im_array_s[i])
-    new_u.append(im_array_u[i])
-im_array_h = new_h
-im_array_s = new_s
-im_array_u = new_u
-print('trimmed to '+str(np.min(sizes)), end='\n\n')
+# Restore the weights
+model = funktions.create_model()
+model.load_weights('./checkpoints/my_checkpoint')
 
-im_array = []
+images = load_images_from_folder('images/')
+length_h = len(load_images_from_folder('images_h/'))
+length_s = len(load_images_from_folder('images_s/'))
+length_u = len(load_images_from_folder('images_u/'))
+length__ = len(load_images_from_folder('images_#/'))
 
-for i in range(0, len(im_array_h)):
-    im_array.append([im_array_h[i], 1])
-    print('H: '+str(i+1), end='\r')
-print()
+print('allready h: '+str(length_h))
+print('allready s: '+str(length_s))
+print('allready u: '+str(length_u))
+print('allready _: '+str(length__), end='\n')
 
-for i in range(0, len(im_array_u)):
-    im_array.append([im_array_u[i], 2])
-    print('U: '+str(i+1), end='\r')
-print()
+for i in range(0, len(images)):
+    frame = images[i]
 
-for i in range(0, len(im_array_s)):
-    im_array.append([im_array_s[i], 3])
-    print('S: '+str(i+1), end='\r')
-print()
+    # show
+    pred = model.predict(frame[np.newaxis, ...])
+    predicted_class = np.argmax(pred[0], axis=-1)
 
-for i in range(0, len(im_array_space)):
-    im_array.append([im_array_space[i], 0])
-    print('_: '+str(i+1), end='\r')
+    if predicted_class == 1:
+        output = 'h'
+        length_h += 1
+        imageIndex = length_h
+    elif predicted_class == 2:
+        output = 'u'
+        length_u += 1
+        imageIndex = length_u
+    elif predicted_class == 3:
+        output = 's'
+        length_s += 1
+        imageIndex = length_s
+    else:
+        output = '#'
+        length__ += 1
+        imageIndex = length__
 
-print()
-print('--------')
-print('= '+str(len(im_array)), end='\n\n')
+    shutil.move('images/'+str(onlyfiles[i]), "images_"+output+"/image"+str(imageIndex)+".png")
 
-random.shuffle(im_array)
-random.shuffle(im_array)
-random.shuffle(im_array)
-print('shuffled: done', end='\n\n')
-
-label = []
-for i in range(0, len(im_array)):
-    label.append(im_array[i][1])
-
-images = []
-for i in range(0, len(im_array)):
-    images.append(im_array[i][0])
-
-pickle_out = open("label.pickle","wb")
-pickle.dump(label, pickle_out)
-pickle_out.close()
-print('saved labels to label.pickle')
-
-pickle_out = open("images.pickle","wb")
-pickle.dump(images, pickle_out)
-pickle_out.close()
-print('saved images to images.pickle')
+print('now h: '+str(length_h))
+print('now s: '+str(length_s))
+print('now u: '+str(length_u))
+print('now _: '+str(length__))

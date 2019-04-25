@@ -10,7 +10,7 @@ def load_images_from_folder(folder):
             images.append(img)
     return images
 
-def getLabelsAndImages():
+def getLabelsAndImages(print=True):
     images_l = []
     images = []
     labeles = []
@@ -19,10 +19,11 @@ def getLabelsAndImages():
     images_u = load_images_from_folder('images_u/')
     images_s = load_images_from_folder('images_s/')
 
-    print('images__: '+str(len(images__)))
-    print('images_h: '+str(len(images_h)))
-    print('images_u: '+str(len(images_u)))
-    print('images_s: '+str(len(images_s)))
+    if print:
+        print('images__: '+str(len(images__)))
+        print('images_h: '+str(len(images_h)))
+        print('images_u: '+str(len(images_u)))
+        print('images_s: '+str(len(images_s)))
 
     for i in range(0, len(images__)):
         images_l.append([images__[i], 0])
@@ -41,6 +42,3 @@ def getLabelsAndImages():
         labeles.append(images_l[i][1])
 
     return images, labeles
-
-images, labeles = getLabelsAndImages()
-print(labeles)

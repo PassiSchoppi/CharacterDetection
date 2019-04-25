@@ -3,24 +3,34 @@ import tensorflow as tf
 import pickle
 import numpy as np
 import funktions
+import os.path
+from getLabledImages import getLabelsAndImages
 
-# load images
-pickle_in = open("images.pickle","rb")
-im_array = pickle.load(pickle_in)
-im_array = np.array(im_array)
+if os.path.isfile('checkpoints/my_checkpoint.index'):
+    try:
+        print('importing old model')
+        # Restore the weights
+        model = funktions.create_model()
+        model.load_weights('./checkpoints/my_checkpoint')
+    except:
+        print('failed to import model')
+        model = funktions.create_model()
+else:
+    print('creating new model')
+    model = funktions.create_model()
 
-# load labels
-pickle_in = open("label.pickle","rb")
-label = pickle.load(pickle_in)
-label = np.array(label)
+images, labels = getLabelsAndImages(print=False)
+images = np.array(images)
+labels = np.array(labels)
 
-print('image shape: ' + str(im_array.shape))
-print('label shape: ' + str(label.shape), end='\n\n')
+# make the pixel from 3 to 1
 
-im_array = tf.keras.utils.normalize(im_array, axis=1)
+print('image shape: ' + str(images.shape))
+print('label shape: ' + str(labels.shape), end='\n\n')
 
-model = funktions.create_model()
-model.fit(im_array, label, epochs=10)
+images = tf.keras.utils.normalize(images, axis=1)
+
+model.fit(images, labels, epochs=10)
 
 # Save the weights
 model.save_weights('./checkpoints/my_checkpoint')

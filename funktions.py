@@ -7,12 +7,8 @@ import cv2
 def create_model():
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(1000, activation=tf.nn.relu, input_shape=(1000,)))
+    model.add(tf.keras.layers.Dense(1000, activation=tf.nn.relu, input_shape=(8,)))
     model.add(tf.keras.layers.Dense(900, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(800, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(700, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(600, activation=tf.nn.relu))
-    model.add(tf.keras.layers.Dense(500, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
     model.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax))
     model.compile(optimizer='adam',
@@ -36,3 +32,6 @@ def image_processing(frame):
     borderIndex = 300
     frame = cv2.Canny(frame, borderIndex, borderIndex)
     return np.array(frame)
+
+# def debug(frame):
+#     frame = 
