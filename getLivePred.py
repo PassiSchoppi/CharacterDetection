@@ -2,14 +2,9 @@ import funktions
 import tensorflow.keras as keras
 import tensorflow as tf
 import numpy as np
-import time
 import cv2
 from getLabledImages import load_images_from_folder
 from getLabledImages import getLabelsAndImages
-import shutil
-from os import listdir
-from os.path import isfile, join
-from tqdm import tqdm
 
 cv2.namedWindow("cam1")
 vc1 = cv2.VideoCapture(0)
@@ -37,7 +32,7 @@ for i in range(0, len(images)):
     print('shape frame1: '+str(frame1.shape))
     print('shape frame:  '+str(frame.shape))
 
-    # show
+    # predict
     pred = model.predict(frame[np.newaxis, ...])
     predicted_class = np.argmax(pred[0], axis=-1)
     
@@ -57,6 +52,5 @@ for i in range(0, len(images)):
         output = '#'
 
     print('predictione: '+output, end='\r')
-    time.sleep(1)
 
 cv2.destroyWindow("cam1")

@@ -1,3 +1,4 @@
+print('importing packages...')
 import funktions
 import tensorflow.keras as keras
 import tensorflow as tf
@@ -10,12 +11,15 @@ from os import listdir
 from os.path import isfile, join
 from tqdm import tqdm
 
+print('importing filenames...')
 onlyfiles = [f for f in listdir('images/') if isfile(join('images/', f))]
 
+print('importing tf model')
 # Restore the weights
 model = funktions.create_model()
 model.load_weights('./checkpoints/my_checkpoint')
 
+print('importing images')
 images = load_images_from_folder('images/')
 length_h = len(load_images_from_folder('images_h/'))
 length_s = len(load_images_from_folder('images_s/'))
@@ -27,7 +31,7 @@ print('allready s: '+str(length_s))
 print('allready u: '+str(length_u))
 print('allready _: '+str(length__), end='\n')
 
-for i in range(0, len(images)):
+for i in tqdm(range(0, len(images))):
     frame = images[i]
 
     # show
@@ -51,7 +55,7 @@ for i in range(0, len(images)):
         length__ += 1
         imageIndex = length__
 
-    shutil.move('images/'+str(onlyfiles[i]), "images_"+output+"/image"+str(imageIndex)+".png")
+    shutil.move('images/'+str(onlyfiles[i]), "images_"+output+"/"+str(onlyfiles[i]))
 
 print('now h: '+str(length_h))
 print('now s: '+str(length_s))
