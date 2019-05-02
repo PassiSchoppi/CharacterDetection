@@ -6,9 +6,9 @@ import cv2
 def create_model():
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(120, 160)),
-        keras.layers.Dense(6000, activation=tf.nn.relu),
         keras.layers.Dense(3000, activation=tf.nn.relu),
-        keras.layers.Dense(100, activation=tf.nn.relu),
+        keras.layers.Dense(1500, activation=tf.nn.relu),
+        keras.layers.Dense(50, activation=tf.nn.relu),
         keras.layers.Dense(4, activation=tf.nn.softmax)
     ])
     model.compile(optimizer='adam',

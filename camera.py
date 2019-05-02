@@ -19,7 +19,7 @@ else:
 
 im_array = []
 
-while True:
+while rval1 and rval2:
     # read from camera
     rval, frame1 = vc1.read()
     rval, frame2 = vc2.read()

@@ -19,18 +19,20 @@ if vc1.isOpened(): # try to get the first frame0
 else:
     rval1 = False
 
+print('importing tf model')
 # Restore the weights
 model = functions.create_model()
-model.load_weights('model_weights.h5')
+# model.load_weights('model_weights.h5')
 
 while rval0 and rval1:
     rval0, frame0 = vc0.read()
-    frame0 = functions.image_processing(frame0)
-    print('shape frame0: '+str(frame0.shape))
-
     rval1, frame1 = vc1.read()
+
+    frame0 = functions.image_processing(frame0)
     frame1 = functions.image_processing(frame1)
-    print('shape frame1: '+str(frame1.shape))
+
+    print('shape: '+str(frame0.shape))
+    print('shape: '+str(frame1.shape))
 
     # # predict
     # pred0 = model.predict(frame0[np.newaxis, ...])

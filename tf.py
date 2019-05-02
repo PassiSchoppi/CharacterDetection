@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import os
 from getLabledImages import getLabelsAndImages
-import function
+import functions
 
 print('importing images...')
 train_images, train_labels = getLabelsAndImages()
@@ -18,9 +18,8 @@ os.chdir('..')
 
 new_images = []
 for i in range(len(train_images)):
-    new_images.append(function.rgb2gray(train_images[i]))
+    new_images.append(functions.rgb2gray(train_images[i]))
 train_images = np.array(new_images)
-test_images = scale(test_images)
 
 class_names = ['#', 'H', 'U', 'S']
 print('classes: '+str(class_names), end='\n')
