@@ -1,7 +1,6 @@
 import cv2
-import pickle
 import time
-import funktions
+import functions
 import tensorflow.keras as keras
 import tensorflow as tf
 

@@ -1,7 +1,6 @@
 print('importing packages...')
 import tensorflow.keras as keras
 import tensorflow as tf
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 from getLabledImages import getLabelsAndImages

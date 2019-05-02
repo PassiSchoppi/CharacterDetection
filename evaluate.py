@@ -4,7 +4,6 @@ import tensorflow.keras as keras
 import tensorflow as tf
 import numpy as np
 import cv2
-from getLabledImages import load_images_from_folder
 from getLabledImages import getLabelsAndImages
 import os
 import time
@@ -48,7 +47,7 @@ for i in range(0, len(images)-1):
         output = '#'
 
     print('predictione: '+output, end='\n')
-    # time.sleep(0.5)
+    time.sleep(0.5)
 
 cv2.destroyWindow("cam1")
 
