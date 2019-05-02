@@ -11,9 +11,7 @@ def create_model():
         keras.layers.Dense(50, activation=tf.nn.relu),
         keras.layers.Dense(4, activation=tf.nn.softmax)
     ])
-    model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
+    model.compile(loss='mean_squared_error', optimizer=sgd)
     return model
 
 def rgb2gray(rgb):
