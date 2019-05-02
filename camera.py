@@ -30,6 +30,8 @@ while True:
     im_array.append(frame1)
     im_array.append(frame2)
 
+    print('shape: '+str(frame1.shape))
+
     # delay
     # time.sleep(0.1)
 
