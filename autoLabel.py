@@ -1,5 +1,5 @@
 print('importing packages...')
-import funktions
+import functions
 import tensorflow.keras as keras
 import tensorflow as tf
 import numpy as np
@@ -16,8 +16,8 @@ onlyfiles = [f for f in listdir('images/') if isfile(join('images/', f))]
 
 print('importing tf model')
 # Restore the weights
-model = funktions.create_model()
-model.load_weights('./checkpoints/my_checkpoint')
+model = functions.create_model()
+model.load_weights('model_weights.h5')
 
 print('importing images')
 images = load_images_from_folder('images/')
@@ -33,6 +33,7 @@ print('allready _: '+str(length__), end='\n')
 
 for i in tqdm(range(0, len(images))):
     frame = images[i]
+    frame = functions.image_processing(frame)
 
     # show
     pred = model.predict(frame[np.newaxis, ...])
