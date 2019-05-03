@@ -8,25 +8,18 @@ from functions import *
 
 
 print('importing images...')
+# change this
+# ...or not
+os.chdir('testData/')
 train_images, train_labels = getLabelsAndImages()
 train_images = np.array(train_images)
 train_labels = np.array(train_labels)
-
-os.chdir('testData/')
-test_images, test_labels = getLabelsAndImages()
-test_images = np.array(test_images)
-test_labels = np.array(test_labels)
 os.chdir('..')
 
 new_images = []
 for i in range(len(train_images)):
     new_images.append(rgb2gray(train_images[i]).flatten())
 train_images = np.array(new_images, dtype=np.float32)
-
-new_images = []
-for i in range(len(test_images)):
-    new_images.append(rgb2gray(test_images[i]).flatten())
-test_images = np.array(new_images, dtype=np.float32)
 
 
 
@@ -74,11 +67,17 @@ while rval0 and rval1:
         break
     
     frame0 = np.array(frame0, dtype=np.float32)
-    
-    frame0 = frame0.flatten('F')
+    frame0 = frame0.flatten()
     frame0 = np.resize(frame0, (19200,))
-    ret, results, neighbours ,dist = kNearest.findNearest(np.array([frame0], dtype=np.float32), k=1)
-    
+    ret, results, neighbours ,dist = kNearest.findNearest(np.array([frame0], dtype=np.float32), k=3)
     print("result: " + str(results), end="\n")
-    # print("neighbours: " + str(neighbours), end="\n")
-    # print("distance: " + str(dist))
+    print("neighbours: " + str(neighbours), end="\n")
+    print("distance: " + str(dist))
+
+    frame1 = np.array(frame1, dtype=np.float32)
+    frame1 = frame1.flatten()
+    frame1 = np.resize(frame1, (19200,))
+    ret, results, neighbours ,dist = kNearest.findNearest(np.array([frame1], dtype=np.float32), k=3)
+    print("result: " + str(results), end="\n")
+    print("neighbours: " + str(neighbours), end="\n")
+    print("distance: " + str(dist))
