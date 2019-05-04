@@ -1,37 +1,24 @@
 print('importing packages...', end='')
 import numpy as np
 import cv2
-import os
-from getLabledImages import getLabelsAndImages
 from functions import *
-import serial
-from serial import Serial, SEVENBITS, STOPBITS_ONE, PARITY_EVEN
 import struct, time
+
+import RPi.GPIO as GPIO
+
 print('done', end='\n')
 
+tail = 3
+head = 6
 
-
-print('trying to connent do Arduino...', end='')
-ser = serial.Serial('/dev/ttyS0', 
-                    baudrate=38400, 
-                    bytesize=serial.EIGHTBITS,
-                    timeout=0.1)
-print('done', end='\n')
-
-def push(signals, prt=True):
-    ser.open()
-    output = bytes([1, 2, 2, int(signals[0]), int(signals[1]), 3, 4])
-    if print:
-        print(output)
-    ser.write(b'hallos')
-    ser.close()
-
-
+GPIO.setmode(GPIO.BCMd)
+pinID = 14
+GPIO.setup(pinID, GPIO.OUT)
 
 print('trying to connect to cameras...', end='')
 cv2.namedWindow("cam0")
 vc0 = cv2.VideoCapture(0)
-if vc0.isOpened(): # try to get the first frame0
+if vc0.isOpened():  # try to get the first frame0
     rval0, frame0 = vc0.read()
 else:
     rval0 = False
@@ -40,7 +27,7 @@ else:
 
 cv2.namedWindow("cam1")
 vc1 = cv2.VideoCapture(2)
-if vc1.isOpened(): # try to get the first frame0
+if vc1.isOpened():  # try to get the first frame0
     rval1, frame1 = vc1.read()
 else:
     rval1 = False
@@ -48,45 +35,55 @@ else:
     exit()
 print('done', end='\n')
 
-
-
 print('start loop')
 while rval0 and rval1:
     # read from camera
     rva0, frame0 = vc0.read()
     rval, frame1 = vc1.read()
-    
+
     frame0 = image_processing(frame0)
     frame1 = image_processing(frame1)
 
     unique0, counts0 = np.unique(frame0, return_counts=True)
     anz0 = dict(zip(unique0, counts0))
-    res0 = int((anz0[0.0]/(anz0[0.0]+anz0[1.0]))*255)
+    if len(anz0) == 2:
+        res0 = float(anz0[0.0] / (anz0[0.0] + anz0[1.0]))*100
 
     unique1, counts1 = np.unique(frame1, return_counts=True)
     anz1 = dict(zip(unique1, counts1))
-    res1 = int((anz1[0.0]/(anz1[0.0]+anz1[1.0]))*255)
-    
-    
+    if len(anz1) == 2:
+        res1 = float(anz1[0.0] / (anz1[0.0] + anz1[1.0]))*100
 
-    # push([res0, res1])
-    a = ser.readline()
-    print(a)
-    ser.write(a)
+    print('camera0: ' + str(int(res0)) + '%' + ' black' + '            ' + 'camera1: ' + str(int(res1)) + '%' + ' black',
+          end='\r')
 
+    victim = False
+    if res0 > tail:
+        if res0 < head:
+            victim = True
+            print()
+            print('victim recognised')
+    if res1 > tail:
+        if res1 < head:
+            victim = True
+            print()
+            print('victim recognised')
 
-
+    if victim:
+        GPIO.output(pinID, GPIO.HIGH)
+    else:
+        GPIO.output(pinID, GPIO.LOW)
 
     # show
     cv2.imshow("cam0", frame0)
     key = cv2.waitKey(20)
-    if key == 27: # exit on ESC
+    if key == 27:  # exit on ESC
         print('manual break')
         break
-    
+
     # show
     cv2.imshow("cam1", frame1)
     key = cv2.waitKey(20)
-    if key == 27: # exit on ESC
+    if key == 27:  # exit on ESC
         print('manual break')
         break

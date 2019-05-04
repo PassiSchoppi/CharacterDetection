@@ -16,10 +16,10 @@ def image_processing(frame):
     frame = np.array(new_image)
     # cut image
     cutTop = 20
-    cutLeft = 25
+    cutLeft = 35
     frame = frame[int(cutTop) : int(len(frame)-cutTop), int(cutLeft) : int(len(frame[0])-cutLeft)]
-    # show borders
-    thresh = 100
+    # show b/w
+    thresh = 30
     frame = cv2.threshold(frame, thresh, 255, cv2.THRESH_BINARY)[1]
     frame = frame / 255.0
     return np.array(frame)
