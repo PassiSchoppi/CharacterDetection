@@ -15,12 +15,11 @@ def image_processing(frame):
     new_image = rgb2gray(frame)
     frame = np.array(new_image)
     # cut image
-    cutTop = 2
-    cutLeft = 16
+    cutTop = 20
+    cutLeft = 25
     frame = frame[int(cutTop) : int(len(frame)-cutTop), int(cutLeft) : int(len(frame[0])-cutLeft)]
     # show borders
-    borderIndex = 300
-    frame = frame.astype(np.uint8)
-    frame = cv2.Canny(frame, borderIndex, borderIndex)
+    thresh = 100
+    frame = cv2.threshold(frame, thresh, 255, cv2.THRESH_BINARY)[1]
     frame = frame / 255.0
     return np.array(frame)
